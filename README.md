@@ -1,0 +1,2 @@
+# Using the crud api to add users (the tables was automatically created in dump.sql )
+curl -X POST http://localhost:8080/api.php/records/users -H 'Content-Type: application/json' -d '{"firstname":"Homer", "lastname":"Simpson", "email":"hs@example.com"}'

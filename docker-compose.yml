@@ -1,0 +1,29 @@
+version: '2.1'
+services:
+    api:
+        build: ./php-crud-api
+        command: php -S 0.0.0.0:8080 -t /app
+        ports:
+            - 8080:8080
+    mysql:
+        image: mysql:5.7
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: crud
+        command: --log-bin --server-id=1 --binlog-row-image=full
+        volumes:
+            - ./mysql/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        environment:
+            PMA_HOST: mysql
+            PMA_USER: root
+            PMA_PASSWORD: root
+        ports:
+            - 8081:80
+    mysqlreplication:
+        build: php-mysql-replication
+        volumes:
+            - ./php-mysql-replication:/app
+        restart: always
+        command: ["wait-for-it.sh", "mysql:3306", "--", "php", "/app/main.php"]
